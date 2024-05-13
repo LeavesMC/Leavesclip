@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = "leavesclip"
-include("java6", "java17")
+include("java6", "java21")

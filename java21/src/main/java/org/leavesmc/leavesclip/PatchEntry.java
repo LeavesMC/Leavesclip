@@ -7,7 +7,7 @@
  * MIT License
  */
 
-package top.leavesmc.leavesclip;
+package org.leavesmc.leavesclip;
 
 import io.sigpipe.jbsdiff.InvalidHeaderException;
 import io.sigpipe.jbsdiff.Patch;

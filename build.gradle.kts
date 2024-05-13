@@ -14,11 +14,11 @@ subprojects {
     }
 }
 
-val mainClass = "top.leavesmc.leavesclip.Main"
+val mainClass = "org.leavesmc.leavesclip.Main"
 
 tasks.jar {
     val java6Jar = project(":java6").tasks.named("jar")
-    val java17Jar = project(":java17").tasks.named("shadowJar")
+    val java17Jar = project(":java21").tasks.named("shadowJar")
     dependsOn(java6Jar, java17Jar)
 
     from(zipTree(java6Jar.map { it.outputs.files.singleFile }))
@@ -61,7 +61,7 @@ tasks.jar {
 
 val sourcesJar by tasks.registering(Jar::class) {
     val java6Sources = project(":java6").tasks.named("sourcesJar")
-    val java17Sources = project(":java17").tasks.named("sourcesJar")
+    val java17Sources = project(":java21").tasks.named("sourcesJar")
     dependsOn(java6Sources, java17Sources)
 
     from(zipTree(java6Sources.map { it.outputs.files.singleFile }))
@@ -130,9 +130,9 @@ publishing {
 
         repositories {
             val url = if (isSnapshot) {
-                "https://repo.leavesmc.top/snapshots/"
+                "https://repo.leavesmc.org/snapshots/"
             } else {
-                "https://repo.leavesmc.top/releases/"
+                "https://repo.leavesmc.org/releases/"
             }
 
             maven(url) {

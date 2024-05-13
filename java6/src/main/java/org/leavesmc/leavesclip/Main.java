@@ -7,21 +7,21 @@
  * MIT License
  */
 
-package top.leavesmc.leavesclip;
+package org.leavesmc.leavesclip;
 
 import java.lang.reflect.Method;
 
 public final class Main {
 
     public static void main(final String[] args) {
-        if (getJavaVersion() < 17) {
-            System.err.println("Minecraft 1.19 requires running the server with Java 17 or above. " +
-                "Download Java 17 (or above) from https://adoptium.net/");
+        if (getJavaVersion() < 21) {
+            System.err.println("Minecraft 1.21.6 requires running the server with Java 21 or above. " +
+                "Download Java 21 (or above) from https://adoptium.net/");
             System.exit(1);
         }
 
         try {
-            final Class<?> paperclipClass = Class.forName("top.leavesmc.leavesclip.Leavesclip");
+            final Class<?> paperclipClass = Class.forName("org.leavesmc.leavesclip.Leavesclip");
             final Method mainMethod = paperclipClass.getMethod("main", String[].class);
             mainMethod.invoke(null, (Object) args);
         } catch (final Exception e) {

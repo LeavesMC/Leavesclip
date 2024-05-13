@@ -1,4 +1,4 @@
-package top.leavesmc.leavesclip;
+package org.leavesmc.leavesclip;
 
 import java.io.*;
 import java.util.Arrays;
