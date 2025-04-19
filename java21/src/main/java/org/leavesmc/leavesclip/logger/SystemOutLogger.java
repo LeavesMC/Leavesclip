@@ -12,7 +12,7 @@ public class SystemOutLogger extends Logger {
     private final String type;
     private final PrintStream out;
     private final PrintStream err;
-    private Level logLevel = Level.INFO;
+    private final Level logLevel = Level.INFO; // TODO: Make this configurable
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
     public SystemOutLogger(String id) {
@@ -34,14 +34,6 @@ public class SystemOutLogger extends Logger {
     @Override
     public String getType() {
         return type;
-    }
-
-    public void setLogLevel(Level level) {
-        this.logLevel = Objects.requireNonNull(level, "level");
-    }
-
-    public Level getLogLevel() {
-        return this.logLevel;
     }
 
     private boolean isLevelEnabled(Level level) {

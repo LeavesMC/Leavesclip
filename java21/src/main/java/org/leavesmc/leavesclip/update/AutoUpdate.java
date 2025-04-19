@@ -9,9 +9,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class AutoUpdate {
-    public static Logger logger = new SystemOutLogger("AutoUpdate");
+    public static final Logger logger = new SystemOutLogger("AutoUpdate");
+    public static final String autoUpdateDir = "auto_update";
     public static String autoUpdateCorePath;
-    public static String autoUpdateDir = "auto_update";
     public static boolean useAutoUpdateJar = false;
 
     public static void init() {

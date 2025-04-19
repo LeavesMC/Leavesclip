@@ -1,8 +1,6 @@
 package org.leavesmc.leavesclip.patch;
 
 import org.leavesmc.leavesclip.Leavesclip;
-import org.leavesmc.leavesclip.logger.Logger;
-import org.leavesmc.leavesclip.logger.SystemOutLogger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

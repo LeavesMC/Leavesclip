@@ -34,10 +34,6 @@ tasks.shadowJar {
         relocate(pack, "$prefix.$pack")
     }
 
-    minimize() {
-        exclude(dependency("net.fabricmc:sponge-mixin:.*"))
-    }
-
     exclude("META-INF/LICENSE.txt")
     exclude("META-INF/NOTICE.txt")
 }

@@ -43,7 +43,7 @@ public class MixinPackDiscover {
         return mixinsDir;
     }
 
-    private static File[] findJarFilesInDirectory(File directory) throws MixinDiscoveryException {
+    private static File[] findJarFilesInDirectory(File directory) {
         File[] jarFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
         if (jarFiles == null || jarFiles.length == 0) {
             jarFiles = new File[]{};
