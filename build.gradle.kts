@@ -136,8 +136,11 @@ publishing {
             }
 
             maven(url) {
-                credentials(PasswordCredentials::class)
-                name = "leavesmc"
+                name = "leaves"
+                credentials(PasswordCredentials::class) {
+                    username = System.getenv("LEAVES_USERNAME")
+                    password = System.getenv("LEAVES_PASSWORD")
+                }
             }
         }
     }

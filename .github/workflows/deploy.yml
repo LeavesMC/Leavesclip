@@ -18,5 +18,5 @@ jobs:
       - name: Deploy release
         run: ./gradlew -Dorg.gradle.parallel=true publish --no-daemon --stacktrace
         env:
-          ORG_GRADLE_PROJECT_leavesmcUsername: ${{ secrets.NEW_REPO_USERNAME }}
-          ORG_GRADLE_PROJECT_leavesmcPassword: ${{ secrets.NEW_REPO_PASSWORD }}
+          LEAVES_USERNAME: ${{ secrets.NEW_REPO_USERNAME }}
+          LEAVES_PASSWORD: ${{ secrets.NEW_REPO_PASSWORD }}
