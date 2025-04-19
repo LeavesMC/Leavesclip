@@ -7,11 +7,13 @@
  * MIT License
  */
 
-package org.leavesmc.leavesclip;
+package org.leavesmc.leavesclip.patch;
 
 import io.sigpipe.jbsdiff.InvalidHeaderException;
 import io.sigpipe.jbsdiff.Patch;
 import org.apache.commons.compress.compressors.CompressorException;
+import org.leavesmc.leavesclip.Leavesclip;
+import org.leavesmc.leavesclip.update.AutoUpdate;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 import static java.nio.file.StandardOpenOption.*;
 
-record PatchEntry(
+public record PatchEntry(
         String location,
         byte[] originalHash,
         byte[] patchHash,
@@ -37,7 +39,7 @@ record PatchEntry(
 ) {
     private static boolean announced = false;
 
-    static PatchEntry[] parse(final BufferedReader reader) throws IOException {
+    public static PatchEntry[] parse(final BufferedReader reader) throws IOException {
         var result = new PatchEntry[8];
 
         int index = 0;
@@ -85,7 +87,7 @@ record PatchEntry(
         );
     }
 
-    void applyPatch(final Map<String, Map<String, URL>> urls, final Path originalRootDir, final Path repoDir) throws IOException {
+    public void applyPatch(final Map<String, Map<String, URL>> urls, final Path originalRootDir, final Path repoDir) throws IOException {
         final Path inputDir = originalRootDir.resolve("META-INF").resolve(this.location);
         final Path targetDir = repoDir.resolve(this.location);
 
@@ -100,7 +102,7 @@ record PatchEntry(
         }
 
         if (!announced) {
-            System.out.println("Applying patches");
+            Leavesclip.logger.info("Apply patches");
             announced = true;
         }
 

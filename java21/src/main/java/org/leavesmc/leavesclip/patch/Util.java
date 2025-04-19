@@ -1,4 +1,7 @@
-package org.leavesmc.leavesclip;
+package org.leavesmc.leavesclip.patch;
+
+import org.leavesmc.leavesclip.Leavesclip;
+import org.leavesmc.leavesclip.update.AutoUpdate;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -7,7 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-class Util {
+public class Util {
 
     private Util() {
     }
@@ -47,7 +50,7 @@ class Util {
         }
     }
 
-    static String readResourceText(final String path) throws IOException {
+    public static String readResourceText(final String path) throws IOException {
         final String p;
         if (path.startsWith("/")) {
             p = path;
@@ -106,17 +109,18 @@ class Util {
         return i;
     }
 
-    static RuntimeException fail(final String message, final Throwable err) {
-        System.err.println(message);
+    public static RuntimeException fail(final String message, final Throwable err) {
         if (err != null) {
-            err.printStackTrace();
+            Leavesclip.logger.error(message, err);
+        } else {
+            Leavesclip.logger.error(message);
         }
         System.exit(1);
         throw new InternalError();
     }
 
     @SuppressWarnings("unchecked")
-    static <X extends Throwable> RuntimeException sneakyThrow(final Throwable ex) throws X {
+    public static <X extends Throwable> RuntimeException sneakyThrow(final Throwable ex) throws X {
         throw (X) ex;
     }
 

@@ -1,4 +1,6 @@
-package org.leavesmc.leavesclip;
+package org.leavesmc.leavesclip.patch;
+
+import org.leavesmc.leavesclip.update.AutoUpdate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,9 +18,9 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
-record FileEntry(byte[] hash, String id, String path) {
+public record FileEntry(byte[] hash, String id, String path) {
 
-    static FileEntry[] parse(final BufferedReader reader) throws IOException {
+    public static FileEntry[] parse(final BufferedReader reader) throws IOException {
         var result = new FileEntry[8];
 
         int index = 0;
@@ -47,7 +49,7 @@ record FileEntry(byte[] hash, String id, String path) {
         }
     }
 
-    void extractFile(
+    public void extractFile(
             final Map<String, URL> urls,
             final PatchEntry[] patches,
             final String targetName,

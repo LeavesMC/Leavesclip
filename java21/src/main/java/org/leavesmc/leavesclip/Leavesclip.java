@@ -1,5 +1,20 @@
 package org.leavesmc.leavesclip;
 
+import org.leavesmc.leavesclip.logger.Logger;
+import org.leavesmc.leavesclip.logger.SystemOutLogger;
+import org.leavesmc.leavesclip.mixin.MixinPackDiscover;
+import org.leavesmc.leavesclip.mixin.MixinServiceKnot;
+import org.leavesmc.leavesclip.mixin.MixinServiceKnotBootstrap;
+import org.leavesmc.leavesclip.mixin.MixinURLClassLoader;
+import org.leavesmc.leavesclip.patch.DownloadContext;
+import org.leavesmc.leavesclip.patch.FileEntry;
+import org.leavesmc.leavesclip.patch.PatchEntry;
+import org.leavesmc.leavesclip.patch.Util;
+import org.leavesmc.leavesclip.update.AutoUpdate;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.Mixins;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,20 +22,23 @@ import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class Leavesclip {
+    public static final Logger logger = new SystemOutLogger("Leavesclip");
 
     public static void main(final String[] args) {
         if (Path.of("").toAbsolutePath().toString().contains("!")) {
-            System.err.println("Leavesclip may not run in a directory containing '!'. Please rename the affected folder.");
+            logger.error("Leavesclip may not run in a directory containing '!'. Please rename the affected folder");
             System.exit(1);
         }
 
@@ -28,27 +46,54 @@ public final class Leavesclip {
             AutoUpdate.init();
         }
 
-        final URL[] classpathUrls = setupClasspath();
+        if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
+            overrideAsmVersion();
+            MixinPackDiscover.discover();
+            System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
+            System.setProperty("mixin.service", MixinServiceKnot.class.getName());
+        }
 
-        final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader().getParent();
-        final URLClassLoader classLoader = new URLClassLoader(classpathUrls, parentClassLoader);
+        URLClassLoader classLoader;
+        final URL[] setupClasspathUrls = setupClasspath();
+
+        if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
+            final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinPackDiscover.jarUrls.length);
+            System.arraycopy(MixinPackDiscover.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinPackDiscover.jarUrls.length);
+
+            final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader(); // remove .getParent(), hope no side-effect
+            MixinServiceKnot.classLoader = Leavesclip.class.getClassLoader();
+
+            MixinBootstrap.init();
+            MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.SERVER);
+
+            classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
+            MixinServiceKnot.classLoader = classLoader;
+            MixinPackDiscover.jsonFiles.forEach(Mixins::addConfiguration);
+        } else {
+            classLoader = new URLClassLoader(setupClasspathUrls);
+        }
 
         final String mainClassName = findMainClass();
-        System.out.println("Starting " + mainClassName);
+        logger.info("Starting " + mainClassName);
 
+        final Thread runThread = generateThread(args, mainClassName, classLoader);
+        runThread.start();
+    }
+
+    private static Thread generateThread(Object args, String mainClassName, URLClassLoader classLoader) {
         final Thread runThread = new Thread(() -> {
             try {
                 final Class<?> mainClass = Class.forName(mainClassName, true, classLoader);
                 final MethodHandle mainHandle = MethodHandles.lookup()
                         .findStatic(mainClass, "main", MethodType.methodType(void.class, String[].class))
                         .asFixedArity();
-                mainHandle.invoke((Object) args);
+                mainHandle.invoke(args);
             } catch (final Throwable t) {
                 throw Util.sneakyThrow(t);
             }
         }, "ServerMain");
         runThread.setContextClassLoader(classLoader);
-        runThread.start();
+        return runThread;
     }
 
     private static URL[] setupClasspath() {
@@ -245,6 +290,18 @@ public final class Leavesclip {
             }
         } catch (final IOException e) {
             throw Util.fail("Failed to apply patches", e);
+        }
+    }
+
+    private static void overrideAsmVersion() {
+        try {
+            Class<?> asmClass = Class.forName("org.spongepowered.asm.util.asm.ASM");
+            Field minorVersionField = asmClass.getDeclaredField("implMinorVersion");
+            minorVersionField.setAccessible(true);
+            minorVersionField.setInt(null, 5);
+
+        } catch (Exception e) {
+            logger.error("Failed to override asm version", e);
         }
     }
 }

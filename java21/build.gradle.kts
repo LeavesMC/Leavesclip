@@ -17,16 +17,25 @@ tasks.withType<JavaCompile>().configureEach {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spongepowered.org/maven/")
 }
 
 dependencies {
     implementation("io.sigpipe:jbsdiff:1.0")
+    implementation("net.fabricmc:sponge-mixin:0.15.5+mixin.0.8.7") {
+        exclude(group = "com.google.code.gson", module = "gson")
+        exclude(group = "com.google.guava", module = "guava")
+    }
 }
 
 tasks.shadowJar {
     val prefix = "leavesclip.libs"
     listOf("org.apache", "org.tukaani", "io.sigpipe").forEach { pack ->
         relocate(pack, "$prefix.$pack")
+    }
+
+    minimize() {
+        exclude(dependency("net.fabricmc:sponge-mixin:.*"))
     }
 
     exclude("META-INF/LICENSE.txt")

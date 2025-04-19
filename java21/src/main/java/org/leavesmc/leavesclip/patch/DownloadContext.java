@@ -1,4 +1,8 @@
-package org.leavesmc.leavesclip;
+package org.leavesmc.leavesclip.patch;
+
+import org.leavesmc.leavesclip.Leavesclip;
+import org.leavesmc.leavesclip.logger.Logger;
+import org.leavesmc.leavesclip.logger.SystemOutLogger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,12 +14,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
+import static java.nio.file.StandardOpenOption.*;
 
-record DownloadContext(byte[] hash, URL url, String fileName) {
-
+public record DownloadContext(byte[] hash, URL url, String fileName) {
     public Path getOutputFile(final Path outputDir) {
         final Path cacheDir = outputDir.resolve("cache");
         return cacheDir.resolve(this.fileName);
@@ -49,7 +50,7 @@ record DownloadContext(byte[] hash, URL url, String fileName) {
         }
         Files.deleteIfExists(outputFile);
 
-        System.out.println("Downloading " + this.fileName);
+        Leavesclip.logger.info("Downloading {}", this.fileName);
 
         try (
                 final ReadableByteChannel source = Channels.newChannel(this.url.openStream());
@@ -57,8 +58,7 @@ record DownloadContext(byte[] hash, URL url, String fileName) {
         ) {
             fileChannel.transferFrom(source, 0, Long.MAX_VALUE);
         } catch (final IOException e) {
-            System.err.println("Failed to download " + this.fileName);
-            e.printStackTrace();
+            Leavesclip.logger.error(e, "Failed to download {}", this.fileName);
             System.exit(1);
         }
 
