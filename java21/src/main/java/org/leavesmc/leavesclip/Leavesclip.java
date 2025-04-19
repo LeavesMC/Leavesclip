@@ -2,10 +2,7 @@ package org.leavesmc.leavesclip;
 
 import org.leavesmc.leavesclip.logger.Logger;
 import org.leavesmc.leavesclip.logger.SystemOutLogger;
-import org.leavesmc.leavesclip.mixin.MixinPackDiscover;
-import org.leavesmc.leavesclip.mixin.MixinServiceKnot;
-import org.leavesmc.leavesclip.mixin.MixinServiceKnotBootstrap;
-import org.leavesmc.leavesclip.mixin.MixinURLClassLoader;
+import org.leavesmc.leavesclip.mixin.*;
 import org.leavesmc.leavesclip.patch.DownloadContext;
 import org.leavesmc.leavesclip.patch.FileEntry;
 import org.leavesmc.leavesclip.patch.PatchEntry;
@@ -48,7 +45,8 @@ public final class Leavesclip {
 
         if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
             overrideAsmVersion();
-            MixinPackDiscover.discover();
+            PluginMixinExtractor.extractMixinJars();
+            MixinJarResolver.resolveMixinJars();
             System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
             System.setProperty("mixin.service", MixinServiceKnot.class.getName());
         }
@@ -57,8 +55,8 @@ public final class Leavesclip {
         final URL[] setupClasspathUrls = setupClasspath();
 
         if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
-            final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinPackDiscover.jarUrls.length);
-            System.arraycopy(MixinPackDiscover.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinPackDiscover.jarUrls.length);
+            final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinJarResolver.jarUrls.length);
+            System.arraycopy(MixinJarResolver.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinJarResolver.jarUrls.length);
 
             final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader(); // remove .getParent(), hope no side-effect
             MixinServiceKnot.classLoader = Leavesclip.class.getClassLoader();
@@ -68,7 +66,7 @@ public final class Leavesclip {
 
             classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
             MixinServiceKnot.classLoader = classLoader;
-            MixinPackDiscover.jsonFiles.forEach(Mixins::addConfiguration);
+            MixinJarResolver.jsonFiles.forEach(Mixins::addConfiguration);
         } else {
             classLoader = new URLClassLoader(setupClasspathUrls);
         }

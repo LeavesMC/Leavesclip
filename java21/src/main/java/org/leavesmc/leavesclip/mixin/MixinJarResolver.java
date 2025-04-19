@@ -8,37 +8,39 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
-public class MixinPackDiscover {
-    private static final Logger logger = new SystemOutLogger("Mixin");
-    private static final String MIXINS_DIRECTORY = "mixins";
-    private static final Pattern JSON_PATTERN = Pattern.compile("^mixins(\\.[a-zA-Z0-9]+)+\\.json$");
-    public static List<String> jsonFiles;
-    public static URL[] jarUrls;
+import static org.leavesmc.leavesclip.mixin.PluginMixinExtractor.MIXINS_DIRECTORY;
 
-    public static void discover() {
+public class MixinJarResolver {
+    private static final Logger logger = new SystemOutLogger("Mixin");
+    private static final Pattern JSON_PATTERN = Pattern.compile("^mixins(\\.[a-zA-Z0-9]+)+\\.json$");
+    public static List<String> jsonFiles = Collections.emptyList();
+    public static URL[] jarUrls = new URL[]{};
+
+    public static void resolveMixinJars() {
         try {
             File mixinsDir = validateAndGetMixinsDirectory();
             File[] jarFiles = findJarFilesInDirectory(mixinsDir);
             jarUrls = convertJarFilesToUrls(jarFiles);
             jsonFiles = findMatchingJsonFilesInJars(jarFiles);
         } catch (MixinDiscoveryException e) {
-            logger.error("Failed to discover mixin packs", e);
+            if (e.breakOut) {
+                return;
+            }
+            logger.error("Failed to discover mixin jars", e);
         }
     }
 
     private static File validateAndGetMixinsDirectory() throws MixinDiscoveryException {
         File mixinsDir = new File(MIXINS_DIRECTORY);
         if (!mixinsDir.exists()) {
-            boolean created = mixinsDir.mkdirs();
-            if (!created) {
-                throw new MixinDiscoveryException("Failed to create mixins directory");
-            }
+            throw MixinDiscoveryException.breakOut();
         } else if (!mixinsDir.isDirectory()) {
-            throw new MixinDiscoveryException("'mixins' exists but is not a directory");
+            throw new MixinDiscoveryException("'" + mixinsDir + "'' exists but is not a directory");
         }
         return mixinsDir;
     }
@@ -46,7 +48,7 @@ public class MixinPackDiscover {
     private static File[] findJarFilesInDirectory(File directory) {
         File[] jarFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
         if (jarFiles == null || jarFiles.length == 0) {
-            jarFiles = new File[]{};
+            throw MixinDiscoveryException.breakOut();
         }
         return jarFiles;
     }
@@ -59,7 +61,7 @@ public class MixinPackDiscover {
             }
             return jarUrls;
         } catch (MalformedURLException e) {
-            throw new MixinDiscoveryException("Failed to convert JAR file paths", e);
+            throw new MixinDiscoveryException("Failed to convert Jar file paths", e);
         }
     }
 
@@ -82,13 +84,21 @@ public class MixinPackDiscover {
         return foundJsonFiles;
     }
 
-    private static class MixinDiscoveryException extends Exception {
+    private static class MixinDiscoveryException extends RuntimeException {
+        public boolean breakOut = false;
+
         public MixinDiscoveryException(String message) {
             super(message);
         }
 
         public MixinDiscoveryException(String message, Throwable cause) {
             super(message, cause);
+        }
+
+        public static MixinDiscoveryException breakOut() {
+            MixinDiscoveryException exception = new MixinDiscoveryException("");
+            exception.breakOut = true;
+            return exception;
         }
     }
 }
