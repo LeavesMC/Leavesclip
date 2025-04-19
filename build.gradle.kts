@@ -130,9 +130,9 @@ publishing {
 
         repositories {
             val url = if (isSnapshot) {
-                "https://repo.leavesmc.org/snapshots/"
+                "https://repo.leavesmc.org/snapshots"
             } else {
-                "https://repo.leavesmc.org/releases/"
+                "https://repo.leavesmc.org/releases"
             }
 
             maven(url) {
