@@ -12,7 +12,7 @@ public class SystemOutLogger extends Logger {
     private final String type;
     private final PrintStream out;
     private final PrintStream err;
-    private final Level logLevel = Level.INFO; // TODO: Make this configurable
+    private final Level logLevel = getDefaultLevel();
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
     public SystemOutLogger(String id) {
@@ -34,6 +34,16 @@ public class SystemOutLogger extends Logger {
     @Override
     public String getType() {
         return type;
+    }
+
+    private Level getDefaultLevel() {
+        if (Boolean.getBoolean("leavesclip.log-level.trace")) return Level.TRACE;
+        if (Boolean.getBoolean("leavesclip.log-level.debug")) return Level.DEBUG;
+        if (Boolean.getBoolean("leavesclip.log-level.info")) return Level.INFO;
+        if (Boolean.getBoolean("leavesclip.log-level.warn")) return Level.WARN;
+        if (Boolean.getBoolean("leavesclip.log-level.error")) return Level.ERROR;
+        if (Boolean.getBoolean("leavesclip.log-level.fatal")) return Level.FATAL;
+        return Level.INFO;
     }
 
     private boolean isLevelEnabled(Level level) {
