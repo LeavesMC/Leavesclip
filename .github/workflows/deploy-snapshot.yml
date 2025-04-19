@@ -1,9 +1,10 @@
 name: Deploy Snapshot
 on:
   push:
-    branches: ['leavesclip']
+    branches: ['master']
     paths-ignore:
       - 'license.txt'
+      - 'fabric-loader-license.txt'
       - 'readme.md'
       - '.gitignore'
       - '.gitattributes'
