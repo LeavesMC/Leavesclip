@@ -44,7 +44,7 @@ public class MixinJarResolver {
     }
 
     private static File[] findJarFilesInDirectory(File directory) {
-        File[] jarFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
+        File[] jarFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".mixins.jar"));
         if (jarFiles == null || jarFiles.length == 0) {
             throw MixinDiscoveryException.breakOut();
         }
