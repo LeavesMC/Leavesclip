@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarFile;
-import java.util.regex.Pattern;
 
 import static org.leavesmc.leavesclip.mixin.PluginMixinExtractor.MIXINS_DIRECTORY;
 
 public class MixinJarResolver {
     private static final Logger logger = new SystemOutLogger("Mixin");
-    private static final Pattern JSON_PATTERN = Pattern.compile("^mixins(\\.[a-zA-Z0-9]+)+\\.json$");
     public static List<String> jsonFiles = Collections.emptyList();
     public static URL[] jarUrls = new URL[]{};
 
@@ -72,7 +70,7 @@ public class MixinJarResolver {
             try (JarFile jar = new JarFile(jarFile)) {
                 jar.stream().forEach(entry -> {
                     String name = entry.getName();
-                    if (!entry.isDirectory() && !name.contains("/") && JSON_PATTERN.matcher(name).matches()) {
+                    if (!entry.isDirectory() && !name.contains("/") && name.startsWith("mixins.") && name.endsWith(".json")) {
                         foundJsonFiles.add(name);
                     }
                 });

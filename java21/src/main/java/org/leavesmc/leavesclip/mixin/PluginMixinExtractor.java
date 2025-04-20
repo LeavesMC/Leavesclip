@@ -11,14 +11,14 @@ import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PluginMixinExtractor {
     public static final String PLUGIN_DIRECTORY = "plugins";
     public static final String MIXINS_DIRECTORY = PLUGIN_DIRECTORY + File.separator + ".mixins";
-    public static final String MIXINS_JAR_SUFFIX = "mixins.jar";
+    public static final String MIXINS_JAR_SUFFIX = ".mixins.jar";
     private static final Logger logger = new SystemOutLogger("Mixin");
 
     public static void extractMixinJars() {
@@ -41,16 +41,26 @@ public class PluginMixinExtractor {
                 return;
             }
 
+            Set<String> validMixinJarFileNames = new HashSet<>();
             for (File jarFile : jarFiles) {
-                processJarFile(jarFile);
+                validMixinJarFileNames.addAll(processJarFile(jarFile));
+            }
+
+            File[] mixinJarDirFiles =  mixinsDir.listFiles((dir, name) -> name.endsWith(MIXINS_JAR_SUFFIX));
+            if (mixinJarDirFiles != null) {
+                for (File mixinJarDirFile : mixinJarDirFiles) {
+                    if(validMixinJarFileNames.contains(mixinJarDirFile.getName())) continue;
+                    mixinJarDirFile.delete();
+                }
             }
         } catch (Exception e) {
             logger.error("Failed to extract mixin jars");
         }
     }
 
-    private static void processJarFile(File jarFile) {
+    private static Set<String> processJarFile(File jarFile) {
         String jarFileName = jarFile.getName();
+        Set<String> mixinJarFileNames = new HashSet<>();
         try (JarFile jar = new JarFile(jarFile)) {
             Enumeration<JarEntry> entries = jar.entries();
 
@@ -69,6 +79,7 @@ public class PluginMixinExtractor {
                         continue;
                     }
 
+                    mixinJarFileNames.add(entryName);
                     String expectedMd5;
                     try (InputStream is = jar.getInputStream(md5Entry);
                          BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
@@ -100,6 +111,7 @@ public class PluginMixinExtractor {
         } catch (Exception e) {
             logger.warn(e, "Failed to extract mixin jars in '{}'", jarFileName);
         }
+        return mixinJarFileNames;
     }
 
     private static String calculateMd5(File file) throws IOException, NoSuchAlgorithmException {
