@@ -66,6 +66,7 @@ public final class Leavesclip {
 
             classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
             MixinServiceKnot.classLoader = classLoader;
+            Mixins.addConfiguration("mixin-extras.init.mixins.json");
             MixinJarResolver.jsonFiles.forEach(Mixins::addConfiguration);
         } else {
             classLoader = new URLClassLoader(setupClasspathUrls);

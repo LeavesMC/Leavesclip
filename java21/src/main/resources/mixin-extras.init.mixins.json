@@ -1,0 +1,6 @@
+{
+  "minVersion": "0.8.7",
+  "target": "@env(PREINIT)",
+  "plugin": "org.leavesmc.leavesclip.mixin.plugins.extras.MixinExtrasConfigPlugin",
+  "package": "org.leavesmc.leavesclip.mixin.plugins.extras"
+}

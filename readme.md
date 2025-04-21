@@ -34,7 +34,9 @@ jar.
 License
 -------
 
-This project is modified based on [Paperclip](https://github.com/PaperMC/Paperclip). [LICENSE](./license.txt)
+This project is modified based on [Paperclip](https://github.com/PaperMC/Paperclip). [LICENSE](./licenses/license.txt)
 
 The Mixin part of this project uses some code
-from [Fabric Loader](https://github.com/FabricMC/fabric-loader). [LICENSE](./fabric-loader-license.txt)
+from [Fabric Loader](https://github.com/FabricMC/fabric-loader). [LICENSE](./licenses/fabric-loader-license.txt)
+
+The Mixin Extras support uses codes from [Mixin Extra Fabric](https://github.com/LlamaLad7/MixinExtras/blob/master/platform/fabric). [LICENSE](./licenses/mixin-extras-license.txt)
