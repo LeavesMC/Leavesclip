@@ -27,8 +27,8 @@ Building
 
 Building Leavesclip creates a runnable jar, but the jar will not contain the Leavesclip config file or patch data. This
 project consists simply of the launcher itself, the [paperweight Gradle plugin](https://github.com/PaperMC/paperweight)
-generates the patch and config file and inserts it into the jar provided by this project, creating a working runnable
-jar.
+(we use our fork [Leavesweight](https://github.com/LeavesMC/leavesweight)) generates the patch and config file and inserts
+it into the jar provided by this project, creating a working runnable jar.
 
 
 License
