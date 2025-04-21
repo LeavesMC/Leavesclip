@@ -35,5 +35,6 @@ License
 -------
 
 This project is modified based on [Paperclip](https://github.com/PaperMC/Paperclip). [LICENSE](./license.txt)
+
 The Mixin part of this project uses some code
 from [Fabric Loader](https://github.com/FabricMC/fabric-loader). [LICENSE](./fabric-loader-license.txt)
