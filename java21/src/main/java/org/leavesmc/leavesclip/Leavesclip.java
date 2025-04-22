@@ -137,7 +137,7 @@ public final class Leavesclip {
     }
 
     private static PatchEntry[] findPatches() {
-        final InputStream patchListStream = AutoUpdate.getResourceAsStream(AutoUpdate.autoUpdateCorePath, "/META-INF/patches.list");
+        final InputStream patchListStream = AutoUpdate.getResourceAsStreamFromTargetJar("/META-INF/patches.list");
         if (patchListStream == null) {
             return new PatchEntry[0];
         }
@@ -169,7 +169,7 @@ public final class Leavesclip {
     }
 
     private static FileEntry[] findFileEntries(final String fileName) {
-        final InputStream libListStream = AutoUpdate.getResourceAsStream(AutoUpdate.autoUpdateCorePath, "/META-INF/" + fileName);
+        final InputStream libListStream = AutoUpdate.getResourceAsStreamFromTargetJar("/META-INF/" + fileName);
         if (libListStream == null) {
             return null;
         }

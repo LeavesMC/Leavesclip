@@ -70,7 +70,7 @@ public class AutoUpdate {
             throw new RuntimeException(e);
         }
 
-        try (InputStream externalStream = getResourceAsStream(jarPath, "/META-INF/leavesclip-version")) {
+        try (InputStream externalStream = getResourceAsStreamFromTargetJar("/META-INF/leavesclip-version")) {
             if (externalStream != null) {
                 return Arrays.equals(localBytes, externalStream.readAllBytes());
             }
@@ -80,11 +80,12 @@ public class AutoUpdate {
         }
     }
 
-    public static InputStream getResourceAsStream(String jarPath, String name) {
+    public static InputStream getResourceAsStreamFromTargetJar(String name) {
         if (!useAutoUpdateJar) {
             return AutoUpdate.class.getResourceAsStream(name);
         }
 
+        String jarPath = autoUpdateCorePath;
         name = name.replaceFirst("/", "");
         InputStream result = null;
 

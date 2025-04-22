@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 java {
