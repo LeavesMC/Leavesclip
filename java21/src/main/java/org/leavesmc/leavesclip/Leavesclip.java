@@ -43,18 +43,16 @@ public final class Leavesclip {
             AutoUpdate.init();
         }
 
+        URLClassLoader classLoader;
+        final URL[] setupClasspathUrls = setupClasspath();
+
         if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
             overrideAsmVersion();
             PluginMixinExtractor.extractMixinJars();
             MixinJarResolver.resolveMixinJars();
             System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
             System.setProperty("mixin.service", MixinServiceKnot.class.getName());
-        }
 
-        URLClassLoader classLoader;
-        final URL[] setupClasspathUrls = setupClasspath();
-
-        if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
             final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinJarResolver.jarUrls.length);
             System.arraycopy(MixinJarResolver.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinJarResolver.jarUrls.length);
 
@@ -67,7 +65,8 @@ public final class Leavesclip {
             classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
             MixinServiceKnot.classLoader = classLoader;
             Mixins.addConfiguration("mixin-extras.init.mixins.json");
-            MixinJarResolver.jsonFiles.forEach(Mixins::addConfiguration);
+            MixinJarResolver.mixinConfigs.forEach(Mixins::addConfiguration);
+            AccessWidenerManager.initAccessWidener(classLoader);
         } else {
             classLoader = new URLClassLoader(setupClasspathUrls);
         }

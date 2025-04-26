@@ -26,8 +26,10 @@ public class MixinURLClassLoader extends URLClassLoader {
             if (in == null) {
                 throw new ClassNotFoundException(name);
             }
+
             byte[] original = in.readAllBytes();
-            byte[] transformed = transformer.transformClass(MixinEnvironment.getCurrentEnvironment(), name, original);
+            byte[] mixin = transformer.transformClass(MixinEnvironment.getCurrentEnvironment(), name, original);
+            byte[] transformed = AccessWidenerManager.applyAccessWidener(mixin);
 
             return defineClass(name, transformed, 0, transformed.length);
         } catch (Exception e) {

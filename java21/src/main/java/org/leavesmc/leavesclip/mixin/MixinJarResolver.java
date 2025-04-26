@@ -16,7 +16,8 @@ import static org.leavesmc.leavesclip.mixin.PluginMixinExtractor.MIXINS_DIRECTOR
 
 public class MixinJarResolver {
     private static final Logger logger = new SystemOutLogger("Mixin");
-    public static List<String> jsonFiles = Collections.emptyList();
+    public static List<String> mixinConfigs = Collections.emptyList();
+    public static List<String> accessWidenerConfigs = Collections.emptyList();
     public static URL[] jarUrls = new URL[]{};
 
     public static void resolveMixinJars() {
@@ -24,7 +25,9 @@ public class MixinJarResolver {
             File mixinsDir = validateAndGetMixinsDirectory();
             File[] jarFiles = findJarFilesInDirectory(mixinsDir);
             jarUrls = convertJarFilesToUrls(jarFiles);
-            jsonFiles = findMatchingJsonFilesInJars(jarFiles);
+            MixinAndAccessWidener result = findMixinAndAccessWidenerInJars(jarFiles);
+            mixinConfigs = result.mixinConfigs;
+            accessWidenerConfigs = result.accessWidenerConfigs;
         } catch (MixinDiscoveryException e) {
             if (e.breakOut) {
                 return;
@@ -63,15 +66,20 @@ public class MixinJarResolver {
         }
     }
 
-    private static List<String> findMatchingJsonFilesInJars(File[] jarFiles) {
-        List<String> foundJsonFiles = new ArrayList<>();
+    private static MixinAndAccessWidener findMixinAndAccessWidenerInJars(File[] jarFiles) {
+        List<String> mixins = new ArrayList<>();
+        List<String> accessWideners = new ArrayList<>();
 
         for (File jarFile : jarFiles) {
             try (JarFile jar = new JarFile(jarFile)) {
                 jar.stream().forEach(entry -> {
                     String name = entry.getName();
-                    if (!entry.isDirectory() && !name.contains("/") && name.startsWith("mixins.") && name.endsWith(".json")) {
-                        foundJsonFiles.add(name);
+                    if (!entry.isDirectory() && !name.contains("/")) {
+                        if (name.startsWith("mixins.") && name.endsWith(".json")) {
+                            mixins.add(name);
+                        } else if (name.endsWith(".accesswidener")) {
+                            accessWideners.add(name);
+                        }
                     }
                 });
             } catch (IOException e) {
@@ -79,7 +87,7 @@ public class MixinJarResolver {
             }
         }
 
-        return foundJsonFiles;
+        return new MixinAndAccessWidener(mixins, accessWideners);
     }
 
     private static class MixinDiscoveryException extends RuntimeException {
@@ -97,6 +105,16 @@ public class MixinJarResolver {
             MixinDiscoveryException exception = new MixinDiscoveryException("");
             exception.breakOut = true;
             return exception;
+        }
+    }
+
+    private static class MixinAndAccessWidener {
+        public List<String> mixinConfigs;
+        public List<String> accessWidenerConfigs;
+
+        public MixinAndAccessWidener(List<String> mixinConfigs, List<String> accessWidenerConfigs) {
+            this.mixinConfigs = mixinConfigs;
+            this.accessWidenerConfigs = accessWidenerConfigs;
         }
     }
 }
