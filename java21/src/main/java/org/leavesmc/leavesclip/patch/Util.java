@@ -11,10 +11,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class Util {
+    public static final MessageDigest sha256Digest = getSha256Digest();
+
     private Util() {
     }
-
-    public static final MessageDigest sha256Digest = getSha256Digest();
 
     private static MessageDigest getSha256Digest() {
         try {

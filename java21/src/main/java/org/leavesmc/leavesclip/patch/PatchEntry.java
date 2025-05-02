@@ -15,11 +15,7 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.leavesmc.leavesclip.Leavesclip;
 import org.leavesmc.leavesclip.update.AutoUpdate;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,13 +25,13 @@ import java.util.Map;
 import static java.nio.file.StandardOpenOption.*;
 
 public record PatchEntry(
-        String location,
-        byte[] originalHash,
-        byte[] patchHash,
-        byte[] outputHash,
-        String originalPath,
-        String patchPath,
-        String outputPath
+    String location,
+    byte[] originalHash,
+    byte[] patchHash,
+    byte[] outputHash,
+    String originalPath,
+    String patchPath,
+    String outputPath
 ) {
     private static boolean announced = false;
 
@@ -77,13 +73,13 @@ public record PatchEntry(
         }
 
         return new PatchEntry(
-                parts[0],
-                Util.fromHex(parts[1]),
-                Util.fromHex(parts[2]),
-                Util.fromHex(parts[3]),
-                parts[4],
-                parts[5],
-                parts[6]
+            parts[0],
+            Util.fromHex(parts[1]),
+            Util.fromHex(parts[2]),
+            Util.fromHex(parts[3]),
+            parts[4],
+            parts[5],
+            parts[6]
         );
     }
 
@@ -131,8 +127,8 @@ public record PatchEntry(
                 Files.createDirectories(outputFile.getParent());
             }
             try (
-                    final OutputStream outStream =
-                            new BufferedOutputStream(Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING))
+                final OutputStream outStream =
+                    new BufferedOutputStream(Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING))
             ) {
                 Patch.patch(originalBytes, patchBytes, outStream);
             }

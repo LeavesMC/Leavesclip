@@ -18,7 +18,8 @@
 
 package org.leavesmc.leavesclip.mixin;
 
-import java.net.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;

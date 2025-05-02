@@ -1,5 +1,6 @@
 package org.leavesmc.leavesclip.mixin;
 
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
@@ -20,7 +21,7 @@ public class MixinURLClassLoader extends URLClassLoader {
     }
 
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    protected Class<?> findClass(@NotNull String name) throws ClassNotFoundException {
         String path = name.replace('.', '/') + ".class";
         try (InputStream in = getResourceAsStream(path)) {
             if (in == null) {

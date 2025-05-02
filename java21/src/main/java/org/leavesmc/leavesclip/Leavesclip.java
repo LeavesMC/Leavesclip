@@ -1,7 +1,7 @@
 package org.leavesmc.leavesclip;
 
 import org.leavesmc.leavesclip.logger.Logger;
-import org.leavesmc.leavesclip.logger.SystemOutLogger;
+import org.leavesmc.leavesclip.logger.SimpleLogger;
 import org.leavesmc.leavesclip.mixin.*;
 import org.leavesmc.leavesclip.patch.DownloadContext;
 import org.leavesmc.leavesclip.patch.FileEntry;
@@ -30,8 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Leavesclip {
-    public static final Logger logger = new SystemOutLogger("Leavesclip");
+public final class Leavesclip { 
+    public static final Logger logger = new SimpleLogger("Leavesclip");
 
     public static void main(final String[] args) {
         if (Path.of("").toAbsolutePath().toString().contains("!")) {
@@ -83,8 +83,8 @@ public final class Leavesclip {
             try {
                 final Class<?> mainClass = Class.forName(mainClassName, true, classLoader);
                 final MethodHandle mainHandle = MethodHandles.lookup()
-                        .findStatic(mainClass, "main", MethodType.methodType(void.class, String[].class))
-                        .asFixedArity();
+                    .findStatic(mainClass, "main", MethodType.methodType(void.class, String[].class))
+                    .asFixedArity();
                 mainHandle.invoke(args);
             } catch (final Throwable t) {
                 throw Util.sneakyThrow(t);
@@ -119,7 +119,7 @@ public final class Leavesclip {
 
         // Exit if user has set `paperclip.patchonly` or `leavesclip.patchonly` system property to `true`
         if (Boolean.getBoolean("paperclip.patchonly")
-                || Boolean.getBoolean("leavesclip.patchonly")) {
+            || Boolean.getBoolean("leavesclip.patchonly")) {
             System.exit(0);
         }
 
@@ -248,12 +248,12 @@ public final class Leavesclip {
     }
 
     private static void extractEntries(
-            final Map<String, URL> urls,
-            final PatchEntry[] patches,
-            final Path originalRootDir,
-            final Path repoDir,
-            final FileEntry[] entries,
-            final String targetName
+        final Map<String, URL> urls,
+        final PatchEntry[] patches,
+        final Path originalRootDir,
+        final Path repoDir,
+        final FileEntry[] entries,
+        final String targetName
     ) throws IOException {
         if (entries == null) {
             return;
@@ -268,10 +268,10 @@ public final class Leavesclip {
     }
 
     private static void applyPatches(
-            final Map<String, Map<String, URL>> urls,
-            final PatchEntry[] patches,
-            final Path originalJar,
-            final Path repoDir
+        final Map<String, Map<String, URL>> urls,
+        final PatchEntry[] patches,
+        final Path originalJar,
+        final Path repoDir
     ) {
         if (patches.length == 0) {
             return;

@@ -28,6 +28,8 @@ dependencies {
         exclude(group = "com.google.code.gson", module = "gson")
         exclude(group = "com.google.guava", module = "guava")
     }
+    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("org.jetbrains:annotations:15.0")
 }
 
 tasks.shadowJar {

@@ -18,23 +18,25 @@
 
 package org.leavesmc.leavesclip.mixin;
 
+import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leavesclip.Leavesclip;
-import org.leavesmc.leavesclip.logger.SystemOutLogger;
+import org.leavesmc.leavesclip.logger.SimpleLogger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.launch.platform.container.ContainerHandleURI;
 import org.spongepowered.asm.launch.platform.container.IContainerHandle;
 import org.spongepowered.asm.logging.ILogger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformerFactory;
 import org.spongepowered.asm.service.*;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.util.ReEntranceLock;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBytecodeProvider, ITransformerProvider, IClassTracker {
     public static ClassLoader classLoader;
@@ -45,7 +47,7 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
         lock = new ReEntranceLock(1);
     }
 
-    public byte[] getClassBytes(String name, boolean ignored) throws ClassNotFoundException, IOException {
+    public byte[] getClassBytes(@NotNull String name, boolean ignored) throws ClassNotFoundException, IOException {
         String resource = name.replace('.', '/') + ".class";
         try (InputStream is = classLoader.getResourceAsStream(resource)) {
             if (is == null) throw new ClassNotFoundException(name);
@@ -104,7 +106,8 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
     }
 
     @Override
-    public void prepare() { }
+    public void prepare() {
+    }
 
     @Override
     public MixinEnvironment.Phase getInitialPhase() {
@@ -123,10 +126,12 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
     }
 
     @Override
-    public void beginPhase() { }
+    public void beginPhase() {
+    }
 
     @Override
-    public void checkEnv(Object bootSource) { }
+    public void checkEnv(Object bootSource) {
+    }
 
     @Override
     public ReEntranceLock getReEntranceLock() {
@@ -183,7 +188,8 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
     }
 
     @Override
-    public void registerInvalidClass(String className) { }
+    public void registerInvalidClass(String className) {
+    }
 
     @Override
     public boolean isClassLoaded(String className) {
@@ -217,7 +223,8 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
     }
 
     @Override
-    public void addTransformerExclusion(String name) { }
+    public void addTransformerExclusion(String name) {
+    }
 
     @Override
     public String getSideName() {
@@ -236,6 +243,6 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
 
     @Override
     public ILogger getLogger(String name) {
-        return new SystemOutLogger("Mixin");
+        return new SimpleLogger("Mixin");
     }
 }

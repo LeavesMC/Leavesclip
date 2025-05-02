@@ -15,11 +15,6 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.*;
 
 public record DownloadContext(byte[] hash, URL url, String fileName) {
-    public Path getOutputFile(final Path outputDir) {
-        final Path cacheDir = outputDir.resolve("cache");
-        return cacheDir.resolve(this.fileName);
-    }
-
     public static DownloadContext parseLine(final String line) {
         if (line == null || line.isBlank()) {
             return null;
@@ -37,6 +32,11 @@ public record DownloadContext(byte[] hash, URL url, String fileName) {
         }
     }
 
+    public Path getOutputFile(final Path outputDir) {
+        final Path cacheDir = outputDir.resolve("cache");
+        return cacheDir.resolve(this.fileName);
+    }
+
     public void download(final Path outputDir) throws IOException {
         final Path outputFile = this.getOutputFile(outputDir);
         if (Files.exists(outputFile) && Util.isFileValid(outputFile, this.hash)) {
@@ -51,8 +51,8 @@ public record DownloadContext(byte[] hash, URL url, String fileName) {
         Leavesclip.logger.info("Downloading {}", this.fileName);
 
         try (
-                final ReadableByteChannel source = Channels.newChannel(this.url.openStream());
-                final FileChannel fileChannel = FileChannel.open(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)
+            final ReadableByteChannel source = Channels.newChannel(this.url.openStream());
+            final FileChannel fileChannel = FileChannel.open(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)
         ) {
             fileChannel.transferFrom(source, 0, Long.MAX_VALUE);
         } catch (final IOException e) {

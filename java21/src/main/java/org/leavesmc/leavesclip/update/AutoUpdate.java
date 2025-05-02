@@ -1,7 +1,7 @@
 package org.leavesmc.leavesclip.update;
 
 import org.leavesmc.leavesclip.logger.Logger;
-import org.leavesmc.leavesclip.logger.SystemOutLogger;
+import org.leavesmc.leavesclip.logger.SimpleLogger;
 
 import java.io.*;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class AutoUpdate {
-    public static final Logger logger = new SystemOutLogger("AutoUpdate");
+    public static final Logger logger = new SimpleLogger("AutoUpdate");
     public static final String autoUpdateDir = "auto_update";
     public static String autoUpdateCorePath;
     public static boolean useAutoUpdateJar = false;

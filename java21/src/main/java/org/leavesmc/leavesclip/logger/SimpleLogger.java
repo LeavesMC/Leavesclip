@@ -1,5 +1,6 @@
 package org.leavesmc.leavesclip.logger;
 
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.logging.Level;
 
 import java.io.PrintStream;
@@ -7,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class SystemOutLogger extends Logger {
+public class SimpleLogger extends Logger {
     private final String id;
     private final String type;
     private final PrintStream out;
@@ -15,39 +16,15 @@ public class SystemOutLogger extends Logger {
     private final Level logLevel = getDefaultLevel();
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
-    public SystemOutLogger(String id) {
+    public SimpleLogger(String id) {
         this(id, "SystemOutLogger");
     }
 
-    public SystemOutLogger(String id, String type) {
+    public SimpleLogger(String id, String type) {
         this.id = Objects.requireNonNull(id, "id");
         this.type = Objects.requireNonNull(type, "type");
         this.out = System.out;
         this.err = System.err;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    private Level getDefaultLevel() {
-        if (Boolean.getBoolean("leavesclip.log-level.trace")) return Level.TRACE;
-        if (Boolean.getBoolean("leavesclip.log-level.debug")) return Level.DEBUG;
-        if (Boolean.getBoolean("leavesclip.log-level.info")) return Level.INFO;
-        if (Boolean.getBoolean("leavesclip.log-level.warn")) return Level.WARN;
-        if (Boolean.getBoolean("leavesclip.log-level.error")) return Level.ERROR;
-        if (Boolean.getBoolean("leavesclip.log-level.fatal")) return Level.FATAL;
-        return Level.INFO;
-    }
-
-    private boolean isLevelEnabled(Level level) {
-        return level != null && level.ordinal() <= this.logLevel.ordinal();
     }
 
     private static String formatPlaceholders(String message, Object... params) {
@@ -80,7 +57,31 @@ public class SystemOutLogger extends Logger {
         return sb.toString();
     }
 
-    private String prefix(Level level) {
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    private Level getDefaultLevel() {
+        if (Boolean.getBoolean("leavesclip.log-level.trace")) return Level.TRACE;
+        if (Boolean.getBoolean("leavesclip.log-level.debug")) return Level.DEBUG;
+        if (Boolean.getBoolean("leavesclip.log-level.info")) return Level.INFO;
+        if (Boolean.getBoolean("leavesclip.log-level.warn")) return Level.WARN;
+        if (Boolean.getBoolean("leavesclip.log-level.error")) return Level.ERROR;
+        if (Boolean.getBoolean("leavesclip.log-level.fatal")) return Level.FATAL;
+        return Level.INFO;
+    }
+
+    private boolean isLevelEnabled(Level level) {
+        return level != null && level.ordinal() <= this.logLevel.ordinal();
+    }
+
+    private @NotNull String prefix(@NotNull Level level) {
         return "[" + timeFormat.format(new Date()) + " " + level.name() + "]: [" + id + "] ";
     }
 

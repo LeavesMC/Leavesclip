@@ -14,9 +14,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
+import static java.nio.file.StandardOpenOption.*;
 
 public record FileEntry(byte[] hash, String id, String path) {
 
@@ -50,12 +48,12 @@ public record FileEntry(byte[] hash, String id, String path) {
     }
 
     public void extractFile(
-            final Map<String, URL> urls,
-            final PatchEntry[] patches,
-            final String targetName,
-            final Path originalRootDir,
-            final String baseDir,
-            final Path outputDir
+        final Map<String, URL> urls,
+        final PatchEntry[] patches,
+        final String targetName,
+        final Path originalRootDir,
+        final String baseDir,
+        final Path outputDir
     ) throws IOException {
         for (final PatchEntry patch : patches) {
             if (patch.location().equals(targetName) && patch.outputPath().equals(this.path)) {
@@ -94,9 +92,9 @@ public record FileEntry(byte[] hash, String id, String path) {
         Files.deleteIfExists(outputFile);
 
         try (
-                final InputStream stream = fileStream;
-                final ReadableByteChannel inputChannel = Channels.newChannel(stream);
-                final FileChannel outputChannel = FileChannel.open(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)
+            final InputStream stream = fileStream;
+            final ReadableByteChannel inputChannel = Channels.newChannel(stream);
+            final FileChannel outputChannel = FileChannel.open(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)
         ) {
             outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
         }

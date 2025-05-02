@@ -4,7 +4,7 @@ import net.fabricmc.accesswidener.AccessWidener;
 import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
 import net.fabricmc.accesswidener.AccessWidenerReader;
 import org.leavesmc.leavesclip.logger.Logger;
-import org.leavesmc.leavesclip.logger.SystemOutLogger;
+import org.leavesmc.leavesclip.logger.SimpleLogger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -15,22 +15,26 @@ import java.io.InputStream;
 import java.net.URLClassLoader;
 
 public class AccessWidenerManager {
-    private static final Logger logger = new SystemOutLogger("AccessWidener");
+    private static final Logger logger = new SimpleLogger("AccessWidener");
     private static final String namespace = "named";
     private static final AccessWidener instance = new AccessWidener();
 
     public static void initAccessWidener(URLClassLoader classLoader) {
         AccessWidenerReader reader = new AccessWidenerReader(instance);
         for (String config : MixinJarResolver.accessWidenerConfigs) {
-            try(InputStream inputStream = classLoader.getResourceAsStream(config)) {
-                if (inputStream == null) {
-                    logger.warn("Access widener config not found: " + config);
-                    continue;
-                }
-                reader.read(inputStream.readAllBytes(), namespace);
-            } catch (IOException e) {
-                logger.warn("Failed to load access widener: " + config, e);
+            applyAccessWidenerConfig(classLoader, config, reader);
+        }
+    }
+
+    private static void applyAccessWidenerConfig(URLClassLoader classLoader, String config, AccessWidenerReader reader) {
+        try (InputStream inputStream = classLoader.getResourceAsStream(config)) {
+            if (inputStream == null) {
+                logger.warn("Access widener config not found: " + config);
+                return;
             }
+            reader.read(inputStream.readAllBytes(), namespace);
+        } catch (IOException e) {
+            logger.warn("Failed to load access widener: " + config, e);
         }
     }
 
