@@ -15,7 +15,10 @@ Please note that these features may bring some safety hazards.
 You can completely disable some of our features by adding the jvm parameter:
 
 * `-Dleavesclip.disable.auto-update=true`
-* `-Dleavesclip.disable.mixin=true`
+
+If you want to use mixin, you need to add the following jvm parameters:
+
+* `-Dleavesclip.enable.mixin=true`
 
 This avoids the legal problems of the GPL's linking clause.
 
