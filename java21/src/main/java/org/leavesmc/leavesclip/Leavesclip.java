@@ -46,7 +46,7 @@ public final class Leavesclip {
         URLClassLoader classLoader;
         final URL[] setupClasspathUrls = setupClasspath();
 
-        if (!Boolean.getBoolean("leavesclip.disable.mixin")) {
+        if (Boolean.getBoolean("leavesclip.enable.mixin")) {
             overrideAsmVersion();
             PluginMixinExtractor.extractMixinJars();
             MixinJarResolver.resolveMixinJars();
