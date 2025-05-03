@@ -25,10 +25,7 @@ import java.net.URLClassLoader;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class Leavesclip { 
     public static final Logger logger = new SimpleLogger("Leavesclip");
@@ -48,8 +45,9 @@ public final class Leavesclip {
 
         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
             overrideAsmVersion();
-            PluginMixinExtractor.extractMixinJars();
+            PluginResolver.extractMixins();
             MixinJarResolver.resolveMixinJars();
+
             System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
             System.setProperty("mixin.service", MixinServiceKnot.class.getName());
 
