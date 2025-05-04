@@ -19,7 +19,6 @@ public class MixinJarResolver {
 
         URL[] urls = getMixinJarUrls();
         if (urls == null) return;
-        logger.info(Arrays.toString(urls));
         jarUrls = urls;
 
         resolveMixinConfigs();
