@@ -3,11 +3,13 @@ package org.leavesmc.leavesclip;
 import org.leavesmc.leavesclip.logger.Logger;
 import org.leavesmc.leavesclip.logger.SimpleLogger;
 import org.leavesmc.leavesclip.mixin.*;
+import org.leavesmc.leavesclip.mixin.plugins.condition.BuildInfoInjector;
 import org.leavesmc.leavesclip.patch.DownloadContext;
 import org.leavesmc.leavesclip.patch.FileEntry;
 import org.leavesmc.leavesclip.patch.PatchEntry;
 import org.leavesmc.leavesclip.patch.Util;
 import org.leavesmc.leavesclip.update.AutoUpdate;
+import org.leavesmc.plugin.mixin.condition.condition.ConditionChecker;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
@@ -44,6 +46,7 @@ public final class Leavesclip {
         final URL[] setupClasspathUrls = setupClasspath();
 
         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+            BuildInfoInjector.inject();
             overrideAsmVersion();
             PluginResolver.extractMixins();
             MixinJarResolver.resolveMixinJars();
@@ -61,6 +64,7 @@ public final class Leavesclip {
             MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.SERVER);
 
             classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
+            ConditionChecker.setClassLoader(classLoader);
             MixinServiceKnot.classLoader = classLoader;
             Mixins.addConfiguration("mixin-extras.init.mixins.json");
             MixinJarResolver.mixinConfigs.forEach(Mixins::addConfiguration);

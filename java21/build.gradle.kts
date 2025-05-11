@@ -18,10 +18,12 @@ tasks.withType<JavaCompile>().configureEach {
 repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
+    mavenLocal()
 }
 
 dependencies {
     implementation("io.sigpipe:jbsdiff:1.0")
+    implementation("org.leavesmc:leaves-plugin-mixin-condition:1.0-SNAPSHOT")
     implementation("io.github.llamalad7:mixinextras-common:0.4.1")
     implementation("net.fabricmc:access-widener:2.1.0")
     implementation("net.fabricmc:sponge-mixin:0.15.5+mixin.0.8.7") {
