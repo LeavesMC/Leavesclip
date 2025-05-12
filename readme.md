@@ -37,7 +37,7 @@ it into the jar provided by this project, creating a working runnable jar.
 License
 -------
 
-This project is modified based on [Paperclip](https://github.com/PaperMC/Paperclip). [LICENSE](./licenses/license.txt)
+This project is licensed under [LICENSE](./licenses/license.txt), and based on [Paperclip](https://github.com/PaperMC/Paperclip).
 
 The Mixin part of this project uses some codes
 from [Fabric Loader](https://github.com/FabricMC/fabric-loader). [LICENSE](./licenses/fabric-loader-license.txt)
