@@ -145,9 +145,3 @@ publishing {
         }
     }
 }
-
-tasks.register("printVersion") {
-    doFirst {
-        println(version)
-    }
-}
