@@ -18,7 +18,8 @@ tasks.withType<JavaCompile>().configureEach {
 repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
-    mavenLocal()
+    maven("https://repo.leavesmc.org/releases/")
+    maven("https://repo.leavesmc.org/snapshots/")
 }
 
 dependencies {
