@@ -22,8 +22,7 @@ public class BuildInfoInjector {
             throw new RuntimeException(e);
         }
         if (buildInfoString.endsWith("\tDEV")) {
-            //noinspection ResultOfMethodCallIgnored
-            buildInfoString.replaceFirst("\tDEV", "\t0");
+            buildInfoString = buildInfoString.replaceFirst("\tDEV", "\t0");
         }
         BuildInfo buildInfo = BuildInfo.fromString(buildInfoString);
         logger.info(buildInfo.toString());
