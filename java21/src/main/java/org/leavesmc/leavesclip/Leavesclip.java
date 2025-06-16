@@ -11,8 +11,10 @@ import org.leavesmc.leavesclip.patch.Util;
 import org.leavesmc.leavesclip.update.AutoUpdate;
 import org.leavesmc.plugin.mixin.condition.condition.ConditionChecker;
 import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.FabricUtil;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
+import org.spongepowered.asm.mixin.extensibility.IMixinConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +31,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
 
-public final class Leavesclip { 
+public final class Leavesclip {
     public static final Logger logger = new SimpleLogger("Leavesclip");
 
     public static void main(final String[] args) {
@@ -68,6 +70,7 @@ public final class Leavesclip {
             MixinServiceKnot.classLoader = classLoader;
             Mixins.addConfiguration("mixin-extras.init.mixins.json");
             MixinJarResolver.mixinConfigs.forEach(Mixins::addConfiguration);
+            decorateMixinConfigWithPluginId();
             AccessWidenerManager.initAccessWidener(classLoader);
         } else {
             classLoader = new URLClassLoader(setupClasspathUrls);
@@ -78,6 +81,18 @@ public final class Leavesclip {
 
         final Thread runThread = generateThread(args, mainClassName, classLoader);
         runThread.start();
+    }
+
+    private static void decorateMixinConfigWithPluginId() {
+        Mixins.getConfigs().forEach(config -> {
+            String mixinConfigName = config.getName();
+            String pluginId = MixinJarResolver.getPluginId(mixinConfigName);
+            if (pluginId == null) return;
+
+            IMixinConfig mixinConfig = config.getConfig();
+            mixinConfig.decorate(FabricUtil.KEY_MOD_ID, pluginId);
+            mixinConfig.decorate(FabricUtil.KEY_COMPATIBILITY, FabricUtil.COMPATIBILITY_LATEST);
+        });
     }
 
     private static Thread generateThread(Object args, String mainClassName, URLClassLoader classLoader) {
