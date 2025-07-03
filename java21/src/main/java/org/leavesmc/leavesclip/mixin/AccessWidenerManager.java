@@ -22,7 +22,7 @@ public class AccessWidenerManager {
     public static void initAccessWidener(URLClassLoader classLoader) {
         AccessWidenerReader reader = new AccessWidenerReader(instance);
         for (String config : MixinJarResolver.accessWidenerConfigs) {
-            if (config.isEmpty() || config == null) continue;
+            if (config == null || config.isEmpty()) continue;
             applyAccessWidenerConfig(classLoader, config, reader);
         }
     }
