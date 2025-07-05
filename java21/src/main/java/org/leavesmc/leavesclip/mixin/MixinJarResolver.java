@@ -77,6 +77,7 @@ public class MixinJarResolver {
         accessWidenerConfigs = PluginResolver.leavesPluginMetas.stream()
             .map(LeavesPluginMeta::getMixin)
             .map(LeavesPluginMeta.MixinConfig::getAccessWidener)
+            .filter(Objects::nonNull)
             .toList();
     }
 }
