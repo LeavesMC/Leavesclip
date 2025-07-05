@@ -78,6 +78,7 @@ public class MixinJarResolver {
             .map(LeavesPluginMeta::getMixin)
             .map(LeavesPluginMeta.MixinConfig::getAccessWidener)
             .filter(Objects::nonNull)
+            .filter(config -> !config.isEmpty())
             .toList();
     }
 }
