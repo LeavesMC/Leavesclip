@@ -1,12 +1,14 @@
 package org.leavesmc.leavesclip.mixin;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Objects;
 
 public class MixinURLClassLoader extends URLClassLoader {
     private final IMixinTransformer transformer;
@@ -18,6 +20,16 @@ public class MixinURLClassLoader extends URLClassLoader {
             throw new IllegalStateException("Cannot found MixinTransformer");
         }
         this.transformer = (IMixinTransformer) active;
+    }
+
+    @Override
+    public @Nullable URL getResource(String name) {
+        Objects.requireNonNull(name);
+        if (name.endsWith(".class")) {
+            return super.getResource(name);
+        } else {
+            return findResource(name);
+        }
     }
 
     @Override

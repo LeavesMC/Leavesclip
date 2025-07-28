@@ -59,7 +59,7 @@ public final class Leavesclip {
             final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinJarResolver.jarUrls.length);
             System.arraycopy(MixinJarResolver.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinJarResolver.jarUrls.length);
 
-            final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader(); // remove .getParent(), hope no side-effect
+            final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader();
             MixinServiceKnot.classLoader = Leavesclip.class.getClassLoader();
 
             MixinBootstrap.init();
@@ -67,13 +67,13 @@ public final class Leavesclip {
 
             classLoader = new MixinURLClassLoader(classpathUrls, parentClassLoader);
             ConditionChecker.setClassLoader(classLoader);
-            MixinServiceKnot.classLoader = classLoader;
             Mixins.addConfiguration("mixin-extras.init.mixins.json");
+            MixinServiceKnot.classLoader = classLoader;
             MixinJarResolver.mixinConfigs.forEach(Mixins::addConfiguration);
             decorateMixinConfigWithPluginId();
             AccessWidenerManager.initAccessWidener(classLoader);
         } else {
-            classLoader = new URLClassLoader(setupClasspathUrls);
+            classLoader = new URLClassLoader(setupClasspathUrls, Leavesclip.class.getClassLoader().getParent());
         }
 
         final String mainClassName = findMainClass();
