@@ -35,25 +35,25 @@ public class AutoUpdate {
             autoUpdateCorePath = firstLine;
             File jarFile = new File(autoUpdateCorePath);
             if (!jarFile.isFile() || !jarFile.exists()) {
-                logger.warn("The specified server core: {} does not exist. Using the original jar!", autoUpdateCorePath);
-                return;
+                logger.error("The specified server core: {} does not exist!", autoUpdateCorePath);
+                System.exit(1);
             }
 
             useAutoUpdateJar = true;
 
-            if (!detectionLeavesclipVersion(autoUpdateCorePath)) {
-                logger.warn("Leavesclip version detection in server core: {} failed. Using the original jar!", autoUpdateCorePath);
-                useAutoUpdateJar = false;
-                return;
+            if (!detectionLeavesclipVersion()) {
+                logger.error("Leavesclip version detection in server core: {} failed!", autoUpdateCorePath);
+                System.exit(1);
             }
 
             logger.info("Using server core: {}", autoUpdateCorePath);
         } catch (IOException e) {
             logger.error("Failed to read core path file.\n", e);
+            System.exit(1);
         }
     }
 
-    private static boolean detectionLeavesclipVersion(String jarPath) {
+    private static boolean detectionLeavesclipVersion() {
         if (Boolean.getBoolean("leavesclip.skip-leavesclip-version-check")) {
             return true;
         }
