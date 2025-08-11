@@ -28,7 +28,11 @@ public class MixinURLClassLoader extends URLClassLoader {
         if (name.endsWith(".class")) {
             return super.getResource(name);
         } else {
-            return findResource(name);
+            URL result = findResource(name);
+            if (result != null) {
+                return result;
+            }
+            return super.getResource(name);
         }
     }
 
