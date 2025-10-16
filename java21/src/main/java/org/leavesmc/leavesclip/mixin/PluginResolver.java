@@ -50,6 +50,7 @@ public class PluginResolver {
         File[] jarFiles = pluginsDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
         if (jarFiles == null || jarFiles.length == 0) return;
 
+        //noinspection DataFlowIssue
         leavesPluginMetas = Arrays.stream(jarFiles)
             .parallel()
             .map(PluginResolver::withJarFile)
@@ -170,6 +171,11 @@ public class PluginResolver {
         File pluginFile = entry.first();
         JarFile jarFile = entry.second();
         LeavesPluginMeta pluginMeta = entry.third();
+
+        if (pluginMeta.getMixin() == null) {
+            return null;
+        }
+
         File mixinJarFile = pluginMeta.getMixinJarFile();
 
         String pluginJarHash = calcMd5(pluginFile);
