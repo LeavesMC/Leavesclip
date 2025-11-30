@@ -66,5 +66,9 @@ public class LeavesPluginMeta {
         public void setAccessWidener(String accessWidener) {
             this.accessWidener = accessWidener;
         }
+
+        public boolean isValid() {
+            return packageName != null;
+        }
     }
 }

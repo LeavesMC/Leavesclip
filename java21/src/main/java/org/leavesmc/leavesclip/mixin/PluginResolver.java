@@ -172,7 +172,7 @@ public class PluginResolver {
         JarFile jarFile = entry.second();
         LeavesPluginMeta pluginMeta = entry.third();
 
-        if (pluginMeta.getMixin() == null) {
+        if (pluginMeta.getMixin() == null || !pluginMeta.getMixin().isValid()) {
             return null;
         }
 
