@@ -59,7 +59,7 @@ public final class Leavesclip {
             final URL[] classpathUrls = Arrays.copyOf(setupClasspathUrls, setupClasspathUrls.length + MixinJarResolver.jarUrls.length);
             System.arraycopy(MixinJarResolver.jarUrls, 0, classpathUrls, setupClasspathUrls.length, MixinJarResolver.jarUrls.length);
 
-            final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader();
+            final ClassLoader parentClassLoader = Leavesclip.class.getClassLoader().getParent();
             MixinServiceKnot.classLoader = Leavesclip.class.getClassLoader();
 
             MixinBootstrap.init();
