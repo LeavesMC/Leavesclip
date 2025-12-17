@@ -313,7 +313,7 @@ public final class Leavesclip {
             Class<?> asmClass = Class.forName("org.spongepowered.asm.util.asm.ASM");
             Field minorVersionField = asmClass.getDeclaredField("implMinorVersion");
             minorVersionField.setAccessible(true);
-            minorVersionField.setInt(null, 5);
+            minorVersionField.setInt(null, 8);
 
         } catch (Exception e) {
             logger.error("Failed to override asm version", e);
